@@ -5,4 +5,4 @@ This is a prototype for the game called "Vector Race". This game is played in a 
 
 ## License
 
-This code is licensed under the GNU GPL v3, as seen in the [LICENSE](LICENSE.md) file
+This code is licensed under the GNU GPL v3, as seen in the [LICENSE](LICENSE) file
