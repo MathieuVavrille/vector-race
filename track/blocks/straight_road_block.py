@@ -15,13 +15,13 @@ class StraightRoadBlock(RoadBlock):
 
     def draw(self, canvas, transform):
         if self.is_vertical:
-            canvas.draw_line((transform(self.left-1/2), transform(self.bottom)),
-                            (transform(self.left-1/2), transform(self.top)))
-            canvas.draw_line((transform(self.right+1/2), transform(self.bottom)),
-                            (transform(self.right+1/2), transform(self.top)))
+            canvas.create_line((transform(self.left-1/2), transform(self.bottom-1/2)),
+                               (transform(self.left-1/2), transform(self.top+1/2)))
+            canvas.create_line((transform(self.right+1/2), transform(self.bottom-1/2)),
+                               (transform(self.right+1/2), transform(self.top+1/2)))
         else:
-            canvas.draw_line((transform(self.left), transform(self.bottom-1/2)),
-                             (transform(self.right), transform(self.bottom-1/2)))
-            canvas.draw_line((transform(self.left), transform(self.top+1/2)),
-                             (transform(self.right), transform(self.top+1/2)))
+            canvas.create_line((transform(self.left-1/2), transform(self.bottom-1/2)),
+                               (transform(self.right+1/2), transform(self.bottom-1/2)))
+            canvas.create_line((transform(self.left-1/2), transform(self.top+1/2)),
+                               (transform(self.right+1/2), transform(self.top+1/2)))
             
