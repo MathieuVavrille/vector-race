@@ -13,6 +13,12 @@ class Track:
         for block in self.blocks:
             block.draw(canvas, T)
 
+    def list_positions(self):
+        allowed = set()
+        for block in self.blocks:
+            allowed.update(block.list_positions())
+        return allowed
+
     @classmethod
     def straight_line(cls, length, width):
         start = StartEndBlock(0, (0,0), width, True)
