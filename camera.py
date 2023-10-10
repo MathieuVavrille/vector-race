@@ -1,7 +1,8 @@
 
 import numpy as np
 
-SCALE_EXPONENT = 1.1
+BASE_ZOOM = 1/5
+SCALE_EXPONENT = 1.5
 
 class Camera:
 
@@ -13,11 +14,11 @@ class Camera:
 
     def update(self, player):
         self.pos = player.pos + player.speed/2
-        self.scale = min(self.window_size)/max(max(abs(player.speed)),2)/10*SCALE_EXPONENT**self.scale_zoom
+        self.scale = min(self.window_size)/max(max(abs(player.speed)),2)*BASE_ZOOM*SCALE_EXPONENT**self.scale_zoom
         
-    def transform(self, x, y):
+    def transform(self, x, y, offset=np.array([0,0])):
         coord = np.array([x,y])
-        return tuple(self.scale*(coord+self.pos)+self.window_size/2)
+        return tuple(self.scale*(coord-self.pos)+self.window_size/2+offset)
 
 
         

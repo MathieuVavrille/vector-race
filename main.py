@@ -1,10 +1,12 @@
 
 from tkinter import *
 import numpy as np
+from random import choice
 
 from track.track import Track
 from camera import Camera
 from player import Player
+from constants import *
 
 canvas_size = np.array([500,500])
 
@@ -19,7 +21,6 @@ class Application(Frame):
         self.bind_all("<Escape>", lambda x:self.quit())
         self.player = Player()
         self.camera = Camera(canvas_size)
-        self.camera.update(self.player)
         self.update()
 
     def init_canvas(self):
@@ -27,13 +28,25 @@ class Application(Frame):
         self.canvas_frame.grid()
         self.canv = Canvas(self.canvas_frame, width=canvas_size[0], height=canvas_size[1],bg="white")
         self.canv.grid()
+
+    def init_player(self):
+        self.player = Player(pos=np.array(random.choice(self.track.start_positions)))
     
-    def update(self):
+    def update(self, plot_next_action = True):
+        self.camera.update(self.player)
         self.canv.delete("all")
-        self.track.draw(self.canv, self.camera.transform)
-        for x,y in self.track.list_positions():
-            self.canv.create_circle(TODO)
+        self.track.draw(self.canv, self.camera.transform, self.camera.scale*LINEWIDTH_PROPORTION)
+        for x,y in self.track.get_allowed_positions():
+            canvas_pos = self.camera.transform(x,y)
+            self.canv.create_oval(tuple(canvas_pos-np.array([self.camera.scale,self.camera.scale])*DOT_PROPORTION), tuple(canvas_pos+np.array([self.camera.scale, self.camera.scale])*DOT_PROPORTION), fill="black")
+        self.canv.create_oval(tuple(self.camera.transform(*self.player.pos)-np.array([self.camera.scale,self.camera.scale])*DOT_PROPORTION*PLAYER_DOT_SCALING), tuple(self.camera.transform(*self.player.pos)+np.array([self.camera.scale,self.camera.scale])*DOT_PROPORTION*PLAYER_DOT_SCALING),fill="blue", outline="")
+        if plot_next_action:
+            for pos, function in self.player.next_positions():
+                canvas_pos = self.camera.transform(*pos)
+                dot = self.canv.create_oval(tuple(canvas_pos-np.array([self.camera.scale,self.camera.scale])*DOT_PROPORTION*INTERESTING_DOT_SCALING), tuple(canvas_pos+np.array([self.camera.scale, self.camera.scale])*DOT_PROPORTION*INTERESTING_DOT_SCALING), fill="red", activefill="#ff5050", outline="")
+                self.canv.tag_bind(dot, "<Button-1>", function(self.track, self.update, lambda:self.after(1000,self.quit)))
+            
 
 if __name__ == "__main__":
-    app = Application(Track.straight_line(10, 4))
+    app = Application(Track.straight_line_horizontal(4,30))
     app.mainloop()

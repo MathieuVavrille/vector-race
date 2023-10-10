@@ -8,19 +8,27 @@ class Track:
         self.start_block = start_block
         self.end_block = end_block
         self.blocks = blocks
-
-    def draw(self, canvas, T):
+        
+        self.allowed_positions = set()
         for block in self.blocks:
-            block.draw(canvas, T)
+            self.allowed_positions.update(block.list_positions())
+        self.start_positions = self.start_block.list_positions()
 
-    def list_positions(self):
-        allowed = set()
+    def draw(self, canvas, T, linewidth):
         for block in self.blocks:
-            allowed.update(block.list_positions())
-        return allowed
+            block.draw(canvas, T, linewidth)
 
+    def get_allowed_positions(self):
+        return self.allowed_positions
+        
     @classmethod
-    def straight_line(cls, length, width):
+    def straight_line_vertical(cls, length, width):
         start = StartEndBlock(0, (0,0), width, True)
         end = StartEndBlock(1, (0,length-1), width, False)
-        return Track(start, end, [start, end, StraightRoadBlock(width, length-1, (0,1), True)])
+        return Track(start, end, [start, end, StraightRoadBlock(width, length-2, (0,1), True)])
+        
+    @classmethod
+    def straight_line_horizontal(cls, length, width):
+        start = StartEndBlock(3, (0,0), length, True)
+        end = StartEndBlock(2, (width-1,0), length, False)
+        return Track(start, end, [start, end, StraightRoadBlock(width-2, length, (1,0), False)])
