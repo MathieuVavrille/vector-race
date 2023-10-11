@@ -1,7 +1,6 @@
 
 class RoadBlock:
 
-    
     def check(self, x, y):
         """Checks whether the position (x,y) is in the RoadBlock."""
         raise NotImplementedError("check: RoadBlocks is abstract, use other definitions of roads blocks")

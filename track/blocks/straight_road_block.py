@@ -1,5 +1,8 @@
 
+import numpy as np
+
 from .road_block import RoadBlock
+from constants import BORDER_OFFSET
 
 class StraightRoadBlock(RoadBlock):
 
@@ -14,21 +17,19 @@ class StraightRoadBlock(RoadBlock):
         return self.left <= x <= self.right and self.bottom <= y <= self.top
 
     def draw(self, canvas, T, linewidth):
-        print(self)
         if self.is_vertical:
-            print("here")
-            canvas.create_line((T(self.left-1/2, self.bottom-1/2)),
-                               (T(self.left-1/2, self.top+1/2)),
+            canvas.create_line(T(np.array([self.left-BORDER_OFFSET, self.bottom])),
+                               T(np.array([self.left-BORDER_OFFSET, self.top])),
                                width=linewidth)
-            canvas.create_line((T(self.right+1/2, self.bottom-1/2)),
-                               (T(self.right+1/2, self.top+1/2)),
+            canvas.create_line(T(np.array([self.right+BORDER_OFFSET, self.bottom])),
+                               T(np.array([self.right+BORDER_OFFSET, self.top])),
                                width=linewidth)
         else:
-            canvas.create_line((T(self.left-1/2, self.bottom-1/2)),
-                               (T(self.right+1/2, self.bottom-1/2)),
+            canvas.create_line(T(np.array([self.left, self.bottom-BORDER_OFFSET])),
+                               T(np.array([self.right, self.bottom-BORDER_OFFSET])),
                                width=linewidth)
-            canvas.create_line((T(self.left-1/2, self.top+1/2)),
-                               (T(self.right+1/2, self.top+1/2)),
+            canvas.create_line(T(np.array([self.left, self.top+BORDER_OFFSET])),
+                               T(np.array([self.right, self.top+BORDER_OFFSET])),
                                width=linewidth)
 
     def list_positions(self):
