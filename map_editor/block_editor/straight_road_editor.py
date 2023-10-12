@@ -1,6 +1,7 @@
 
 from tkinter import *
 
+from track.blocks.straight_road_block import StraightRoadBlock
 from .block_editor import BlockEditor
 from .increase_decrease_2d_buttons import IncreaseDecrease2dButtons
 
@@ -11,4 +12,7 @@ class StraightRoadEditor(BlockEditor):
         self.label = Label(self.frame, text="Dimension")
         self.label.grid(column=1,row=0)
         self.dimension_buttons = IncreaseDecrease2dButtons(self.frame, label_texts=("Width","Height"), column=2, row=0)
-                                                           
+
+    def get_block(self, coord, turn_level):
+        value = self.dimension_buttons.get_value()
+        return StraightRoadBlock(value[0], value[1], coord, turn_level%2==0)

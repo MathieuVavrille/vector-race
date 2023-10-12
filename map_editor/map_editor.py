@@ -27,14 +27,22 @@ class MapEditor(Frame):
         self.block_selection.grid(column=1, row=0)
 
         self.previous_mouse_position = None
-        self.current_block = None
+
+        self.rotation = 0
+        self.canv.bind("<Button-3>", self.increase_rotation)
+
+    def increase_rotation(self, event):
+        self.rotation += 1
+        int_pos = self.camera.invert_transform((event.x,event.y))
+        self.previous_mouse_position = int_pos
+        self.update(added_block=self.block_selection.get_block(int_pos, self.rotation))
 
     def motion(self, event):
         x, y = event.x, event.y
         int_pos = self.camera.invert_transform((x,y))
         if not np.array_equal(int_pos, self.previous_mouse_position):
             self.previous_mouse_position = int_pos
-            self.update()
+            self.update(added_block=self.block_selection.get_block(int_pos, self.rotation))
             
     def set_navigation_buttons(self):
         self.navigation_frame = Frame(self, borderwidth = 5, relief="groove")
@@ -60,12 +68,16 @@ class MapEditor(Frame):
         self.canvas_frame.grid(column=0,row=0,rowspan=rowspan)
         self.canv = Canvas(self.canvas_frame, width=canvas_size[0], height=canvas_size[1],bg="white")
         self.canv.grid()
-        #self.bind("<Up>", lambda : self.canv.create_rectangle(100,100,200,200))
     
-    def update(self, plot_next_action = True):
+    def update(self, plot_next_action = True, added_block=None):
         self.canv.delete("all")
         self.track.draw(self.canv, self.camera.transform, self.camera.scale*LINEWIDTH_PROPORTION)
         for allowed_position in self.track.get_allowed_positions():
             canvas_pos = self.camera.transform(np.array(allowed_position))
             self.canv.create_oval(tuple(canvas_pos-self.camera.scale*DOT_PROPORTION), tuple(canvas_pos+self.camera.scale*DOT_PROPORTION), fill="black")
+        if added_block != None:
+            added_block.draw(self.canv, self.camera.transform, self.camera.scale*LINEWIDTH_PROPORTION)
+            for allowed_position in added_block.list_positions():
+                canvas_pos = self.camera.transform(np.array(allowed_position))
+                self.canv.create_oval(tuple(canvas_pos-self.camera.scale*DOT_PROPORTION), tuple(canvas_pos+self.camera.scale*DOT_PROPORTION), fill="black")
             

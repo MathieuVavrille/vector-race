@@ -12,5 +12,5 @@ class IncreaseDecrease2dButtons:
         self.y_increase_decrease = IncreaseDecreaseButtons(self.frame, label_text=label_texts[1], start_value=start_values[1], min_value=min_values[1], max_value=max_values[1], column=0, row=1)
 
     def get_value(self):
-        return np.array(self.x_increase_decrease.get_value(), self.y_increase_decrease.get_value())
+        return (self.x_increase_decrease.get_value(), self.y_increase_decrease.get_value())
         

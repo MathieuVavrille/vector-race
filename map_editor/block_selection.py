@@ -15,10 +15,10 @@ class BlockSelection(Frame):
                            StartFinishEditor(self, False, main_buttons_radio, column=0, row=1),
                            StraightRoadEditor(self, main_buttons_radio, column=0, row=2)]
 
-    def get_block(self, coord):
+    def get_block(self, coord, turn_level):
         for block in self.all_blocks:
             if block.is_active():
-                return block.get_block(coord)
+                return block.get_block(coord, turn_level)
 
     
                                              
