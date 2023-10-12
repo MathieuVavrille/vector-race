@@ -1,12 +1,13 @@
 
 from tkinter import *
 import numpy as np
-from random import choice
+import random
 
 from track.track import Track
 from camera import Camera
 from player import Player
 from constants import *
+from map_editor.map_editor import MapEditor
 
 canvas_size = np.array([500,500])
 
@@ -49,5 +50,5 @@ class Application(Frame):
             
 
 if __name__ == "__main__":
-    app = Application(Track.one_turn())
+    app = MapEditor(Track.one_turn())
     app.mainloop()

@@ -1,7 +1,8 @@
 
 import numpy as np
+import math
 
-BASE_ZOOM = 1/5
+BASE_ZOOM = 1/10
 SCALE_EXPONENT = 1.5
 
 class Camera:
@@ -20,7 +21,20 @@ class Camera:
         self.scale = min(self.window_size)*BASE_ZOOM*SCALE_EXPONENT**self.scale_zoom
         
     def transform(self, coord, offset=0):
-        return tuple((self.scale*(coord-self.pos)+self.window_size/2+offset)*[1,-1]+[0,self.window_size[1]])
+        return tuple((self.scale*(coord-self.pos)
+                      +self.window_size/2+offset)
+                     *[1,-1]
+                     +[0,self.window_size[1]])
+
+    def invert_transform(self, coord, offset=0):
+        coord = np.array(coord)
+        return np.rint(
+            ((coord-[0,self.window_size[1]])
+             *[1,-1]
+             -self.window_size/2-offset)
+            /self.scale
+            +self.pos
+        ).astype(int)
 
     def zoom(self, update_canvas, increment=1):
         def temp():
@@ -29,6 +43,16 @@ class Camera:
             update_canvas()
         return temp
 
+    def move(self, vector, update_canvas):
+        def temp():
+            print(1/SCALE_EXPONENT**self.scale_zoom)
+            exp = max(1,int(1/SCALE_EXPONENT**self.scale_zoom))
+            print(exp)
+            v = vector*exp
+            print(v)
+            self.pos += v
+            update_canvas()
+        return temp
         
 
 

@@ -4,7 +4,7 @@ import numpy as np
 from .road_block import RoadBlock
 from constants import BORDER_OFFSET
 
-class StartEndBlock(RoadBlock):
+class StartFinishBlock(RoadBlock):
 
     def __init__(self, orientation, left_or_down_position, width, is_start):
         """orientation: 0=up, 1=down, 2=left, 3=right;
@@ -20,11 +20,11 @@ class StartEndBlock(RoadBlock):
     def compute_edges(self):
         invert_value = 1 if self.is_left_or_up else -1
         if self.is_vertical:
-            self.start_or_end = (self.start_pos+[-BORDER_OFFSET,0],self.start_pos+[self.width-1+BORDER_OFFSET,0])
+            self.start_or_finish = (self.start_pos+[-BORDER_OFFSET,0],self.start_pos+[self.width-1+BORDER_OFFSET,0])
             self.side1 = (self.start_pos+[-BORDER_OFFSET,0],self.start_pos+[-BORDER_OFFSET,invert_value*BORDER_OFFSET])
             self.side2 = (self.start_pos+[self.width-1+BORDER_OFFSET,invert_value*BORDER_OFFSET],self.start_pos+[self.width-1+BORDER_OFFSET,0])
         else:
-            self.start_or_end = (self.start_pos+[0,-BORDER_OFFSET],self.start_pos+[0,self.width-1+BORDER_OFFSET])
+            self.start_or_finish = (self.start_pos+[0,-BORDER_OFFSET],self.start_pos+[0,self.width-1+BORDER_OFFSET])
             self.side1 = (self.start_pos+[0,-BORDER_OFFSET],self.start_pos+[invert_value*BORDER_OFFSET,-BORDER_OFFSET])
             self.side2 = (self.start_pos+[invert_value*BORDER_OFFSET,self.width-1+BORDER_OFFSET],self.start_pos+[0,self.width-1+BORDER_OFFSET])
     
@@ -35,18 +35,18 @@ class StartEndBlock(RoadBlock):
             return self.start_pos[0] <= x < self.left[0] and self.left[1] == y
 
     def draw(self, canvas, T, linewidth):
-        canvas.create_line(T(self.start_or_end[0]),T(self.start_or_end[1]),
+        canvas.create_line(T(self.start_or_finish[0]),T(self.start_or_finish[1]),
                            width=linewidth,fill="green" if self.is_start else "red")
         canvas.create_line(T(self.side1[0]), T(self.side1[1]),
                            T(self.side2[0]), T(self.side2[1]),
                            width=linewidth)
 
     def list_positions(self):
-        """The positions allowed by the block are on the start/end line"""
+        """The positions allowed by the block are on the start/finish line"""
         if self.is_vertical:
             return {(self.start_pos[0]+i, self.start_pos[1]) for i in range(self.width)}
         else:
             return {(self.start_pos[0], self.start_pos[1]+i) for i in range(self.width)}
 
     def __repr__(self):
-        return f"{'Start' if self.is_start else 'End'}({['right','left','up','down'][self.is_vertical*2+self.is_left_or_up]},{self.start_pos},{self.width})"
+        return f"{'Start' if self.is_start else 'Finish'}({['right','left','up','down'][self.is_vertical*2+self.is_left_or_up]},{self.start_pos},{self.width})"
