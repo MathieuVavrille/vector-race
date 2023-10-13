@@ -2,6 +2,7 @@
 from tkinter import *
 import numpy as np
 from random import choice
+import os
 
 from track.track import Track
 from camera import Camera
@@ -27,8 +28,25 @@ class MapEditor(Frame):
         self.block_selection.grid(column=1, row=0)
 
         self.previous_mouse_position = None
-
         self.rotation = 0
+
+        self.save_frame = Frame(self)
+        self.save_frame.grid(column=1,row=1)
+        self.save_button = Button(self.save_frame, text="Save", command=self.save_track)
+        self.save_button.grid(column=0,row=0)
+        self.save_main_folder_label = Label(self.save_frame, text="saved_tracks/")
+        self.save_main_folder_label.grid(column=1,row=0)
+        self.save_filename = Text(self.save_frame, height=1, width=20)
+        self.save_filename.insert("1.0","track1")
+        self.save_filename.grid(column=2,row=0)
+        self.save_main_folder_label = Label(self.save_frame, text=".trk")
+        self.save_main_folder_label.grid(column=3,row=0)
+
+    def save_track(self):
+        os.makedirs("saved_tracks",exist_ok=True)
+        filename = self.save_filename.get('1.0','end').replace("\n", "")
+        print(filename)
+        self.track.save_to_json(os.path.join("saved_tracks",f"{filename}.trk"))
 
     def place_block(self, event):
         new_block = self.block_selection.get_block(self.previous_mouse_position, self.rotation)

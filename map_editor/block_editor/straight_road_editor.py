@@ -15,4 +15,4 @@ class StraightRoadEditor(BlockEditor):
 
     def get_block(self, coord, turn_level):
         value = self.dimension_buttons.get_value()
-        return StraightRoadBlock(value[0], value[1], coord, turn_level%2==0)
+        return StraightRoadBlock.from_position(value[0], value[1], coord, turn_level%2==0)

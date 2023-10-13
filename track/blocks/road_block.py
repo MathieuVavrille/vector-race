@@ -1,7 +1,4 @@
 
-from .start_finish_block import StartFinishBlock
-from .straight_road_block import StraightRoadBlock
-from .ellipsis_turn_block import EllipsisTurnBlock
 
 class RoadBlock:
 
@@ -23,17 +20,20 @@ class RoadBlock:
 
     @classmethod
     def parse_block_style_json(cls, data):
-        if data["block_style"] == "StartFinishBlock":
+        if data["block_style"] == StartFinishBlock.class_name:
+            from .start_finish_block import StartFinishBlock
             return StartFinishBlock.from_json(data)
-        elif data["block_style"] == "StraightRoadBlock":
+        elif data["block_style"] == StraightRoadBlock.class_name:
+            from .straight_road_block import StraightRoadBlock
             return StraightRoadBlock.from_json(data)
-        elif data["block_style"] == "EllipsisTurnBlock":
+        elif data["block_style"] == EllipsisTurnBlock.class_name:
+            from .ellipsis_turn_block import EllipsisTurnBlock
             return EllipsisTurnBlock.from_json(data)
         else:
             raise ValueError("Block not recognized")
 
     @classmethod
-    def from_json(self, data):
+    def from_json(cls, data):
         """Returns the block instantiated from the data"""
         raise NotImplementedError("from_json: RoadBlocks is abstract, use other definitions of roads blocks")
         

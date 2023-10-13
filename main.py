@@ -50,5 +50,5 @@ class Application(Frame):
             
 
 if __name__ == "__main__":
-    app = MapEditor(Track.one_turn())
+    app = MapEditor(Track.empty())
     app.mainloop()

@@ -13,4 +13,4 @@ class StartFinishEditor(BlockEditor):
         self.width_buttons = IncreaseDecreaseButtons(self.frame, label_text="Width", start_value=4, min_value=1, max_value=None, column=1, row=0)
 
     def get_block(self, base_coord, turn_level):
-        return StartFinishBlock([0,3,1,2][turn_level%4], base_coord, self.width_buttons.get_value(), self.is_start)
+        return StartFinishBlock.from_orientation([0,3,1,2][turn_level%4], base_coord, self.width_buttons.get_value(), self.is_start)

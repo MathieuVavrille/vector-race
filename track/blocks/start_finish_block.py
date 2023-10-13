@@ -6,13 +6,15 @@ from constants import BORDER_OFFSET
 
 class StartFinishBlock(RoadBlock):
 
-    def __init__(self, is_vertical, is_left_or_up, start_pos, width, is_start):
+    class_name="StartFinishBlock"
+
+    def __init__(self, is_vertical=True, is_left_or_up=True, start_pos=np.array([0,0]), width=4, is_start=True):
         """orientation: 0=up, 1=down, 2=left, 3=right;
         left_or_down_position is the position of the start of the block (bottommost or leftmost, knowing that it is inverted on canvas);
         width is the width of the block, should be > 0 (it is the number of starting positions)."""
         self.is_vertical = is_vertical
         self.is_left_or_up = is_left_or_up
-        self.start_pos = left_or_down_position
+        self.start_pos = start_pos
         self.width = width
         self.is_start = is_start
         self.compute_edges()
@@ -49,7 +51,7 @@ class StartFinishBlock(RoadBlock):
             return {(self.start_pos[0], self.start_pos[1]+i) for i in range(self.width)}
 
     def to_json(self):
-        return {"block_style": "StartFinishBlock",
+        return {"block_style": self.class_name,
                 "is_vertical": self.is_vertical,
                 "is_letf_or_up": self.is_left_or_up,
                 "start_pos": tuple(self.start_pos),
@@ -57,8 +59,12 @@ class StartFinishBlock(RoadBlock):
                 "is_start": self.is_start}
 
     @classmethod
+    def from_json(cls, data):
+        return StartFinishBlock(**data)
+    
+    @classmethod
     def from_orientation(cls, orientation, left_or_down_position, width, is_start):
-        return StartFinishBlock(self.is_vertical = orientation <= 1, orientation in {1,2}, left_or_down_position, width, is_start)
+        return StartFinishBlock(orientation <= 1, orientation in {1,2}, left_or_down_position, width, is_start)
 
     
     def __repr__(self):

@@ -6,11 +6,13 @@ from constants import BORDER_OFFSET
 
 class StraightRoadBlock(RoadBlock):
 
-    def __init__(self, width, height, bottom_left, is_vertical):
-        self.left = bottom_left[0]
-        self.right = self.left+width-1
-        self.bottom = bottom_left[1]
-        self.top = self.bottom+height-1
+    class_name="StraightRoadBlock"
+
+    def __init__(self, left, right, bottom, top, is_vertical):
+        self.left = left
+        self.right = right
+        self.bottom = bottom
+        self.top = top
         self.is_vertical = is_vertical
 
     def check(self, x, y):
@@ -35,6 +37,19 @@ class StraightRoadBlock(RoadBlock):
     def list_positions(self):
         """The allowed positions are the whole rectangle"""
         return {(i, j) for i in range(self.left, self.right+1) for j in range(self.bottom, self.top+1)}
+
+    def to_json(self):
+        return {"block_style": self.class_name,
+                "left": self.left,
+                "right": self.right,
+                "bottom": self.bottom,
+                "top": self.top,
+                "is_vertical": self.is_vertical}
+        
+
+    @classmethod
+    def from_position(cls, width, height, bottom_left, is_vertical):
+        return StraightRoadBlock(bottom_left[0], bottom_left[0]+width-1, bottom_left[1], bottom_left[1]+height-1, is_vertical)
 
     def __repr__(self):
         return f"StraightBlock({'vertical' if self.is_vertical else 'horizontal'}, top:{self.top}, bottom:{self.bottom}, left:{self.left}, right:{self.right})"

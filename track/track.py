@@ -41,29 +41,32 @@ class Track:
     def save_to_json(self, filename):
         json_blocks = [block.to_json() for block in self.blocks]
         with open(filename,"w") as f:
-            json.dump(json_blocks)
+            json.dump(json_blocks, f)
 
     @classmethod
     def from_json_file(cls, filename):
         with open(filename, "r") as f:
             data = json.loads(f.read())
-        created_track = Track([],[],[])
+        created_track = Track.empty()
         for json_block in data:
             created_track.add(RoadBlock.parse_block_style_json(json_block))
         return created_track
-            
+
+    @classmethod
+    def empty(cls):
+        return Track([],[],[])
         
     @classmethod
     def straight_line_vertical(cls, length, width):
         start = StartFinishBlock.from_orientation(0, np.array([0,0]), width, True)
         finish = StartFinishBlock.from_orientation(1, np.array([0,length-1]), width, False)
-        return Track([start], [finish], [StraightRoadBlock(width, length, (0,0), True)])
+        return Track([start], [finish], [StraightRoadBlock.from_position(width, length, (0,0), True)])
         
     @classmethod
     def straight_line_horizontal(cls, length, width):
         start = StartFinishBlock.from_orientation(3, np.array([0,0]), length, True)
         finish = StartFinishBlock.from_orientation(2, np.array([width-1,0]), length, False)
-        return Track([start], [finish], [StraightRoadBlock(width, length, (0,0), False)])
+        return Track([start], [finish], [StraightRoadBlock.from_position(width, length, (0,0), False)])
 
     @classmethod
     def one_turn(cls):
