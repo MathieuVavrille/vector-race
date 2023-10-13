@@ -29,17 +29,17 @@ class MapEditor(Frame):
         self.previous_mouse_position = None
 
         self.rotation = 0
-        self.canv.bind("<Button-3>", self.increase_rotation)
 
+    def place_block(self, event):
+        new_block = self.block_selection.get_block(self.previous_mouse_position, self.rotation)
+        self.track.add(new_block)
+        
     def increase_rotation(self, event):
         self.rotation += 1
-        int_pos = self.camera.invert_transform((event.x,event.y))
-        self.previous_mouse_position = int_pos
-        self.update(added_block=self.block_selection.get_block(int_pos, self.rotation))
+        self.update(added_block=self.block_selection.get_block(self.previous_mouse_position, self.rotation))
 
     def motion(self, event):
-        x, y = event.x, event.y
-        int_pos = self.camera.invert_transform((x,y))
+        int_pos = self.camera.invert_transform((event.x, event.y))
         if not np.array_equal(int_pos, self.previous_mouse_position):
             self.previous_mouse_position = int_pos
             self.update(added_block=self.block_selection.get_block(int_pos, self.rotation))
@@ -53,21 +53,17 @@ class MapEditor(Frame):
         self.zoomout_button.grid(column=1, row=1)
         self.zoomin_button = Button(self.navigation_frame, text="+", command=self.camera.zoom(self.update, -1))
         self.zoomin_button.grid(column=2, row=1)
-        
-        self.left_button = Button(self.navigation_frame, text="<", command=self.camera.move(np.array([-1,0]),self.update))
-        self.left_button.grid(column=3, row=1)
-        self.up_button = Button(self.navigation_frame, text="^", command=self.camera.move(np.array([0,1]),self.update))
-        self.up_button.grid(column=4, row=0)
-        self.down_button = Button(self.navigation_frame, text="v", command=self.camera.move(np.array([0,-1]),self.update))
-        self.down_button.grid(column=4, row=2)
-        self.right_button = Button(self.navigation_frame, text=">", command=self.camera.move(np.array([1,0]),self.update))
-        self.right_button.grid(column=5, row=1)
+
+        for text,incr,col,row in [("<",[-1,0],3,1),("^",[0,1],4,0),("v",[0,-1],4,2),(">",[1,0],5,1)]:
+            Button(self.navigation_frame, text=text, command=self.camera.move(np.array(incr),self.update)).grid(column=col, row=row)
 
     def init_canvas(self, rowspan=1):
         self.canvas_frame = Frame(self, borderwidth = 10, relief="ridge")
         self.canvas_frame.grid(column=0,row=0,rowspan=rowspan)
         self.canv = Canvas(self.canvas_frame, width=canvas_size[0], height=canvas_size[1],bg="white")
         self.canv.grid()
+        self.canv.bind("<Button-1>", self.place_block)
+        self.canv.bind("<Button-3>", self.increase_rotation)
     
     def update(self, plot_next_action = True, added_block=None):
         self.canv.delete("all")
