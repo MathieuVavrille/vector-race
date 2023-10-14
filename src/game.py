@@ -41,13 +41,7 @@ class Game(Frame):
         for allowed_position in self.track.get_all_allowed_positions():
             canvas_pos = self.camera.transform(np.array(allowed_position))
             self.canv.create_oval(tuple(canvas_pos-np.array([self.camera.scale,self.camera.scale])*DOT_PROPORTION), tuple(canvas_pos+np.array([self.camera.scale, self.camera.scale])*DOT_PROPORTION), fill="black")
-        # Draw player
-        self.canv.create_oval(tuple(self.camera.transform(self.player.pos)-self.camera.scale*DOT_PROPORTION*PLAYER_DOT_SCALING), tuple(self.camera.transform(self.player.pos)+self.camera.scale*DOT_PROPORTION*PLAYER_DOT_SCALING),fill="blue", outline="")
-        if plot_next_action:
-            for pos, function in self.player.next_positions():
-                canvas_pos = self.camera.transform(pos)
-                dot = self.canv.create_oval(tuple(canvas_pos-self.camera.scale*DOT_PROPORTION*INTERESTING_DOT_SCALING), tuple(canvas_pos+self.camera.scale*DOT_PROPORTION*INTERESTING_DOT_SCALING), fill="red", activefill="#ff5050", outline="")
-                self.canv.tag_bind(dot, "<Button-1>", function(self.track, self.update, lambda:self.after(1000,self.quit), lambda:self.after(1000,self.quit)))
+        self.player.draw(self.canv, self.camera, plot_next_action=(self.track, self.update, lambda:self.after(1000,self.quit), lambda:self.after(1000,self.quit)) if plot_next_action else None)
             
 
 if __name__ == "__main__":
