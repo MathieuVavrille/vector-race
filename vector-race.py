@@ -1,5 +1,8 @@
 
 import argparse
+import sys,os
+
+sys.path.insert(0,os.path.join(os.path.split(__file__)[0],"src"))
 
 from map_editor.map_editor import MapEditor
 from game import Game

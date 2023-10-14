@@ -30,11 +30,18 @@ class Track:
             return temp2
         return temp1
     
-    def get_allowed_positions(self):
+    def get_blocks_allowed_positions(self, block_list):
         allowed_positions = set()
-        for block in self.blocks:
+        for block in block_list:
             allowed_positions.update(block.list_positions())
         return allowed_positions
+
+    def get_all_allowed_positions(self):
+        return self.get_blocks_allowed_positions(self.blocks)
+    def get_start_positions(self):
+        return self.get_blocks_allowed_positions(self.start_blocks)
+    def get_finish_positions(self):
+        return self.get_blocks_allowed_positions(self.finish_blocks)
 
     def add(self, new_block):
         if isinstance(new_block, StartFinishBlock):
@@ -43,12 +50,6 @@ class Track:
             else:
                 self.finish_blocks.append(new_block)
         self.blocks.append(new_block)
-
-    def get_start_positions(self):
-        start_positions = set()
-        for block in self.start_blocks:
-            start_positions.update(block.list_positions())
-        return start_positions
 
     def save_to_json(self, filename):
         json_blocks = [block.to_json() for block in self.blocks]

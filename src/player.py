@@ -17,14 +17,18 @@ class Player:
         return next_positions
                     
     def update_position(self, difference):
-        def callback(track, update_callback, error_callback):
+        def callback(track, update_callback, error_callback, win_callback):
             def temp(event=None):
                 self.speed += difference
+                is_error = False #test here if goes outside with segments
                 self.pos += self.speed
-                is_error = False#tuple(self.pos) not in track.get_allowed_positions() # TODO intersection
-                update_callback(plot_next_action=not is_error)
+                is_error = tuple(self.pos) not in track.get_all_allowed_positions() # TODO intersection
+                is_win = tuple(self.pos) in track.get_finish_positions()
+                update_callback(plot_next_action=not (is_error or is_win))
                 if is_error:
                     error_callback()
+                if is_win:
+                    win_callback()
             return temp
         return callback
     

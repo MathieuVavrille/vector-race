@@ -35,8 +35,8 @@ class StartFinishBlock(RoadBlock):
             delete_rect = canvas.create_rectangle(T(self.side1[0]),T(self.side2[0]),
                                                   fill="#ffa0a0", activefill="#ff2020")
             self.add_delete_command(canvas, delete_rect, delete_command)
-        canvas.create_line(T(self.start_or_finish[0]),T(self.start_or_finish[1]),
-                           width=linewidth,fill="green" if self.is_start else "red")
+        canvas.create_rectangle(T(self.start_or_finish[0]),T(self.side2[0]),
+                                width=linewidth,fill="green" if self.is_start else "red", outline="")
         canvas.create_line(T(self.side1[0]), T(self.side1[1]),
                            T(self.side2[0]), T(self.side2[1]),
                            width=linewidth)
