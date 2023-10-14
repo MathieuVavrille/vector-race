@@ -2,6 +2,7 @@
 import numpy as np
 import json
 
+from .blocks.road_block import RoadBlock
 from .blocks.start_finish_block import StartFinishBlock
 from .blocks.straight_road_block import StraightRoadBlock
 from .blocks.ellipsis_turn_block import EllipsisTurnBlock
@@ -14,10 +15,22 @@ class Track:
         self.blocks = blocks+start_blocks+finish_blocks
         
 
-    def draw(self, canvas, T, linewidth):
+    def draw(self, canvas, T, linewidth, allow_delete=None):
+        """allow_delete = update_canvas if we allow to delete"""
         for block in self.blocks:
-            block.draw(canvas, T, linewidth)
+            block.draw(canvas, T, linewidth, delete_command=self.delete_block_event(allow_delete) if allow_delete else None)
 
+    def delete_block_event(self, update_canvas):
+        def temp1(block_to_delete):
+            def temp2(event):
+                print("delete_here")
+                self.start_blocks=[block for block in self.start_blocks if block!=block_to_delete]
+                self.finish_blocks=[block for block in self.finish_blocks if block!=block_to_delete]
+                self.blocks = [block for block in self.blocks if block!=block_to_delete]
+                update_canvas()
+            return temp2
+        return temp1
+    
     def get_allowed_positions(self):
         allowed_positions = set()
         for block in self.blocks:
@@ -34,7 +47,7 @@ class Track:
 
     def get_start_positions(self):
         start_positions = set()
-        for block in self.blocks:
+        for block in self.start_blocks:
             start_positions.update(block.list_positions())
         return start_positions
 

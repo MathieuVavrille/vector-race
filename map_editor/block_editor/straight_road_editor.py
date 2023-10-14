@@ -9,9 +9,7 @@ class StraightRoadEditor(BlockEditor):
     
     def __init__(self, master, buttons_radio, column=0, row=0):
         BlockEditor.__init__(self, master, "Straight", buttons_radio, column, row)
-        self.label = Label(self.frame, text="Dimension")
-        self.label.grid(column=1,row=0)
-        self.dimension_buttons = IncreaseDecrease2dButtons(self.frame, label_texts=("Width","Height"), column=2, row=0)
+        self.dimension_buttons = IncreaseDecrease2dButtons(self.frame, main_text = "Dimension", label_texts=("Width","Height"), column=2, row=0)
 
     def get_block(self, coord, turn_level):
         value = self.dimension_buttons.get_value()

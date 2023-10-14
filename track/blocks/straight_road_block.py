@@ -8,7 +8,7 @@ class StraightRoadBlock(RoadBlock):
 
     class_name="StraightRoadBlock"
 
-    def __init__(self, left, right, bottom, top, is_vertical):
+    def __init__(self, left, right, bottom, top, is_vertical, **kwargs):
         self.left = left
         self.right = right
         self.bottom = bottom
@@ -40,12 +40,15 @@ class StraightRoadBlock(RoadBlock):
 
     def to_json(self):
         return {"block_style": self.class_name,
-                "left": self.left,
-                "right": self.right,
-                "bottom": self.bottom,
-                "top": self.top,
+                "left": int(self.left),
+                "right": int(self.right),
+                "bottom": int(self.bottom),
+                "top": int(self.top),
                 "is_vertical": self.is_vertical}
-        
+
+    @classmethod
+    def from_json(cls, data):
+        return StraightRoadBlock(**data)
 
     @classmethod
     def from_position(cls, width, height, bottom_left, is_vertical):
@@ -53,3 +56,12 @@ class StraightRoadBlock(RoadBlock):
 
     def __repr__(self):
         return f"StraightBlock({'vertical' if self.is_vertical else 'horizontal'}, top:{self.top}, bottom:{self.bottom}, left:{self.left}, right:{self.right})"
+
+    def __eq__(self, value):
+        return (isinstance(value, StraightRoadBlock) and
+                self.left == value.left and
+                self.right == value.right and
+                self.bottom == value.bottom and
+                self.top == value.top and
+                self.is_vertical == value.is_vertical)
+                

@@ -45,12 +45,7 @@ class Camera:
 
     def move(self, vector, update_canvas):
         def temp():
-            print(1/SCALE_EXPONENT**self.scale_zoom)
-            exp = max(1,int(1/SCALE_EXPONENT**self.scale_zoom))
-            print(exp)
-            v = vector*exp
-            print(v)
-            self.pos += v
+            self.pos += vector*max(1,int(1/SCALE_EXPONENT**self.scale_zoom))
             update_canvas()
         return temp
         

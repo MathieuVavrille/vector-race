@@ -45,12 +45,12 @@ class MapEditor(Frame):
     def save_track(self):
         os.makedirs("saved_tracks",exist_ok=True)
         filename = self.save_filename.get('1.0','end').replace("\n", "")
-        print(filename)
         self.track.save_to_json(os.path.join("saved_tracks",f"{filename}.trk"))
 
     def place_block(self, event):
         new_block = self.block_selection.get_block(self.previous_mouse_position, self.rotation)
-        self.track.add(new_block)
+        if new_block != None:
+            self.track.add(new_block)
         
     def increase_rotation(self, event):
         self.rotation += 1
@@ -83,9 +83,9 @@ class MapEditor(Frame):
         self.canv.bind("<Button-1>", self.place_block)
         self.canv.bind("<Button-3>", self.increase_rotation)
     
-    def update(self, plot_next_action = True, added_block=None):
+    def update(self, added_block=None):
         self.canv.delete("all")
-        self.track.draw(self.canv, self.camera.transform, self.camera.scale*LINEWIDTH_PROPORTION)
+        self.track.draw(self.canv, self.camera.transform, self.camera.scale*LINEWIDTH_PROPORTION, allow_delete=self.update if added_block == None else None)
         for allowed_position in self.track.get_allowed_positions():
             canvas_pos = self.camera.transform(np.array(allowed_position))
             self.canv.create_oval(tuple(canvas_pos-self.camera.scale*DOT_PROPORTION), tuple(canvas_pos+self.camera.scale*DOT_PROPORTION), fill="black")

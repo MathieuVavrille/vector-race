@@ -11,7 +11,7 @@ from map_editor.map_editor import MapEditor
 
 canvas_size = np.array([500,500])
 
-class Application(Frame):
+class Game(Frame):
 
     def __init__(self, track, master = None):
         """Initialization of all the data"""
@@ -31,7 +31,8 @@ class Application(Frame):
         self.canv.grid()
 
     def init_player(self):
-        self.player = Player(pos=np.array(random.choice(self.track.start_positions)))
+        init_pos = np.array(random.choice(list(self.track.get_start_positions())))
+        self.player = Player(pos=init_pos)
     
     def update(self, plot_next_action = True):
         self.camera.update_from_player(self.player)
@@ -50,5 +51,5 @@ class Application(Frame):
             
 
 if __name__ == "__main__":
-    app = MapEditor(Track.empty())
+    app = Game(Track.one_turn())
     app.mainloop()

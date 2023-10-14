@@ -9,23 +9,21 @@ def ellipsis_value(pos, center, radius):
                            
 class EllipsisTurnBlock(RoadBlock):
 
+    class_name = "EllipsisTurnBlock"
+
     def __init__(self, center, angle, inside_rad, outside_rad):
         self.center = center
         self.angle = angle
         self.inside_rad = inside_rad
         self.outside_rad = outside_rad
-        #self.inside_offset = np.array({0:[-1,-1],90:[1,-1],180:[1,1],270:[-1,1]}[self.angle])
         
-    def check(self, x, y):
-        raise NotImplementedError("TODO ?")
-
-    def draw(self, canvas, T, linewidth):
-        """canvas.create_arc(T(self.center-self.inside_rad+self.inside_offset),
-                          T(self.center+self.inside_rad+self.inside_offset),
-                          start=self.angle, extent=90, width=linewidth, style="arc")
-        canvas.create_arc(T(self.center-self.outside_rad+self.inside_offset-1),
-                          T(self.center+self.outside_rad+self.inside_offset+1),
-                          start=self.angle, extent=90, width=linewidth, style="arc")"""
+    def draw(self, canvas, T, linewidth, delete_command=None):
+        if delete_command != None:
+            delete_arc = canvas.create_arc(T(self.center-self.outside_rad-BORDER_OFFSET),
+                                           T(self.center+self.outside_rad+BORDER_OFFSET),
+                                           start=self.angle,extent=90,style="pieslice",
+                                           fill="#ffa0a0", activefill="#ff2020", outline="red")
+            self.add_delete_command(canvas, delete_arc, delete_command)
         canvas.create_arc(T(self.center-self.inside_rad+BORDER_OFFSET),
                           T(self.center+self.inside_rad-BORDER_OFFSET),
                           start=self.angle, extent=90, width=linewidth, style="arc")
@@ -49,8 +47,29 @@ class EllipsisTurnBlock(RoadBlock):
                 if ellipsis_value(np.array([x,y]), self.center, self.outside_rad+BORDER_OFFSET) <= 1 and ellipsis_value(np.array([x,y]), self.center, self.inside_rad-BORDER_OFFSET) >= 1:
                     allowed.add((x,y))
         return allowed
-    #raise NotImplementedError("TODO")
 
+    def to_json(self):
+        return {"block_style": self.class_name,
+                "center": tuple(map(int,self.center)),
+                "angle": self.angle,
+                "inside_rad": tuple(map(int,self.inside_rad)),
+                "outside_rad": tuple(map(int,self.outside_rad))}
+
+    def __eq__(self, value):
+        return (isinstance(value, EllipsisTurnBlock) and
+                np.array_equal(self.center, value.center) and
+                self.angle == value.angle and
+                np.array_equal(self.inside_rad, value.inside_rad) and
+                np.array_equal(self.outside_rad, value.outside_rad))
+            
+
+    @classmethod
+    def from_json(cls, data):
+        return StraightRoadBlock(np.array(data["center"]),
+                                 data["angle"],
+                                 np.array(data["inside_rad"]),
+                                 np.array(data["outside_rad"]))
+    
     def __repr__(self):
         return f"EllipsisTurn({tuple(self.center)}, {tuple(self.inside_rad)}, {tuple(self.outside_rad)})"
 

@@ -3,6 +3,7 @@ from tkinter import *
 
 from .block_editor.start_finish_editor import StartFinishEditor
 from .block_editor.straight_road_editor import StraightRoadEditor
+from .block_editor.ellipsis_turn_editor import EllipsisTurnEditor
 from .block_editor.radio_button_behaviour import RadioButtonBehaviour
 
 class BlockSelection(Frame):
@@ -13,7 +14,8 @@ class BlockSelection(Frame):
         main_buttons_radio = RadioButtonBehaviour()
         self.all_blocks = [StartFinishEditor(self, True, main_buttons_radio, column=0, row=0),
                            StartFinishEditor(self, False, main_buttons_radio, column=0, row=1),
-                           StraightRoadEditor(self, main_buttons_radio, column=0, row=2)]
+                           StraightRoadEditor(self, main_buttons_radio, column=0, row=2),
+                           EllipsisTurnEditor(self, main_buttons_radio, column=0, row=3)]
 
     def get_block(self, coord, turn_level):
         for block in self.all_blocks:
