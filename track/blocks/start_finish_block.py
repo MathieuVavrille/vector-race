@@ -30,13 +30,11 @@ class StartFinishBlock(RoadBlock):
             self.side1 = (self.start_pos+[0,-BORDER_OFFSET],self.start_pos+[invert_value*BORDER_OFFSET,-BORDER_OFFSET])
             self.side2 = (self.start_pos+[invert_value*BORDER_OFFSET,self.width-1+BORDER_OFFSET],self.start_pos+[0,self.width-1+BORDER_OFFSET])
     
-    def check(self, x, y):
-        if self.is_vertical:
-            return self.start_pos[0]==x and self.start_pos[1] <= y < self.left[1]+self.width
-        else:
-            return self.start_pos[0] <= x < self.left[0] and self.left[1] == y
-
-    def draw(self, canvas, T, linewidth):
+    def draw(self, canvas, T, linewidth, delete_command=None):
+        if delete_command != None:
+            delete_rect = canvas.create_rectangle(T(self.side1[0]),T(self.side2[0]),
+                                                  fill="#ffa0a0", activefill="#ff2020")
+            self.add_delete_command(canvas, delete_rect, delete_command)
         canvas.create_line(T(self.start_or_finish[0]),T(self.start_or_finish[1]),
                            width=linewidth,fill="green" if self.is_start else "red")
         canvas.create_line(T(self.side1[0]), T(self.side1[1]),

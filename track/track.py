@@ -23,7 +23,6 @@ class Track:
     def delete_block_event(self, update_canvas):
         def temp1(block_to_delete):
             def temp2(event):
-                print("delete_here")
                 self.start_blocks=[block for block in self.start_blocks if block!=block_to_delete]
                 self.finish_blocks=[block for block in self.finish_blocks if block!=block_to_delete]
                 self.blocks = [block for block in self.blocks if block!=block_to_delete]

@@ -15,10 +15,12 @@ class StraightRoadBlock(RoadBlock):
         self.top = top
         self.is_vertical = is_vertical
 
-    def check(self, x, y):
-        return self.left <= x <= self.right and self.bottom <= y <= self.top
-
-    def draw(self, canvas, T, linewidth):
+    def draw(self, canvas, T, linewidth, delete_command=None):
+        border_offset_array = np.array([BORDER_OFFSET,0] if self.is_vertical else [0,BORDER_OFFSET])
+        if delete_command != None:
+            delete_rect = canvas.create_rectangle(T(np.array([self.left,self.bottom])-border_offset_array),T(np.array([self.right, self.top])+border_offset_array),
+                                                  fill="#ffa0a0", activefill="#ff2020",outline="")
+            self.add_delete_command(canvas, delete_rect, delete_command)
         if self.is_vertical:
             canvas.create_line(T(np.array([self.left-BORDER_OFFSET, self.bottom])),
                                T(np.array([self.left-BORDER_OFFSET, self.top])),

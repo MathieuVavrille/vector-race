@@ -22,7 +22,7 @@ class EllipsisTurnBlock(RoadBlock):
             delete_arc = canvas.create_arc(T(self.center-self.outside_rad-BORDER_OFFSET),
                                            T(self.center+self.outside_rad+BORDER_OFFSET),
                                            start=self.angle,extent=90,style="pieslice",
-                                           fill="#ffa0a0", activefill="#ff2020", outline="red")
+                                           fill="#ffa0a0", activefill="#ff2020", outline="")
             self.add_delete_command(canvas, delete_arc, delete_command)
         canvas.create_arc(T(self.center-self.inside_rad+BORDER_OFFSET),
                           T(self.center+self.inside_rad-BORDER_OFFSET),
@@ -65,7 +65,7 @@ class EllipsisTurnBlock(RoadBlock):
 
     @classmethod
     def from_json(cls, data):
-        return StraightRoadBlock(np.array(data["center"]),
+        return EllipsisTurnBlock(np.array(data["center"]),
                                  data["angle"],
                                  np.array(data["inside_rad"]),
                                  np.array(data["outside_rad"]))
